@@ -10,7 +10,7 @@ use chrono::Local;
 
 pub mod cli;
 
-pub use cli::{Cli, Command, SnapArgs, FindArgs};
+pub use cli::{Cli, Command, FindArgs, SnapArgs};
 
 /// Resolve config + store, falling back to defaults.
 pub fn load_store(cfg_path: Option<&PathBuf>) -> Result<Store> {
@@ -19,9 +19,8 @@ pub fn load_store(cfg_path: Option<&PathBuf>) -> Result<Store> {
 
 fn load_index(store: &Store) -> Result<Index> {
     let idx_dir = store.index_dir()?;
-    index::load_index(&idx_dir)?.ok_or_else(|| {
-        anyhow::anyhow!("no index found; run `brain index` first")
-    })
+    index::load_index(&idx_dir)?
+        .ok_or_else(|| anyhow::anyhow!("no index found; run `brain index` first"))
 }
 
 pub struct NoteResult {
@@ -66,11 +65,7 @@ pub fn snap(
         if combined.trim().is_empty() {
             combined = body;
         } else {
-            combined.push_str(&format!(
-                "\n\n## {}\n\n{}",
-                now.format("%H:%M"),
-                body
-            ));
+            combined.push_str(&format!("\n\n## {}\n\n{}", now.format("%H:%M"), body));
         }
         let note = Note {
             path: path.clone(),
@@ -174,10 +169,7 @@ pub fn daily(store: &Store) -> Result<String> {
 
     // Recent captures: last 5 by created desc (top of list since walk order is arbitrary, sort)
     out.push_str("\nRECENT:\n");
-    let mut recent = idx
-        .as_ref()
-        .map(|i| i.docs.clone())
-        .unwrap_or_default();
+    let mut recent = idx.as_ref().map(|i| i.docs.clone()).unwrap_or_default();
     recent.sort_by(|a, b| b.created.cmp(&a.created));
     for d in recent.iter().take(5) {
         out.push_str(&format!("  {} — {}\n", d.created, d.title));

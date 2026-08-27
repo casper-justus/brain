@@ -121,9 +121,13 @@ The index is a disposable cache: `brain index` rebuilds it from raw Markdown at 
 
 ```bash
 cargo build --workspace
+cargo fmt --all -- --check      # must be clean
+cargo clippy --workspace --all-targets -- -D warnings   # must be clean
 cargo test --workspace
-cargo clippy --workspace --all-targets
+cargo build --release --workspace
 ```
+
+Tests live alongside each crate: unit tests inline in `src/`, end-to-end suites in `brain-core/tests/` (store/index/retrieval pipeline) and `brain-cli/tests/` (drives the real `brain` binary against a temp notes dir). A GitHub Actions workflow (`.github/workflows/ci.yml`) runs the full sequence on every push/PR.
 
 Layout (mirrors the `homectl` convention):
 

@@ -1,6 +1,6 @@
 use anyhow::Result;
-use brain_core::note::NoteKind;
 use brain_cli::{load_store, Cli, Command, SnapArgs};
+use brain_core::note::NoteKind;
 use clap::Parser;
 use std::collections::BTreeMap;
 use std::process::Command as ProcessCommand;

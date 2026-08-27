@@ -73,10 +73,7 @@ pub struct Note {
 pub fn render_front_matter(meta: &NoteMeta) -> String {
     let mut out = String::from("---\n");
     out.push_str(&format!("kind: {}\n", meta.kind.as_str()));
-    out.push_str(&format!(
-        "created: {}\n",
-        meta.created.to_rfc3339()
-    ));
+    out.push_str(&format!("created: {}\n", meta.created.to_rfc3339()));
     if !meta.tags.is_empty() {
         out.push_str(&format!(
             "tags: [{}]\n",
@@ -124,9 +121,7 @@ fn parse_front_matter(raw: &str) -> (NoteMeta, String) {
                                 }
                             }
                             "tags" => {
-                                let clean = v
-                                    .trim_start_matches('[')
-                                    .trim_end_matches(']');
+                                let clean = v.trim_start_matches('[').trim_end_matches(']');
                                 meta.tags = clean
                                     .split(',')
                                     .map(|t| {
@@ -137,8 +132,7 @@ fn parse_front_matter(raw: &str) -> (NoteMeta, String) {
                             }
                             "title" => meta.title = Some(v.to_string()),
                             _ => {
-                                meta.extra
-                                    .insert(k.to_string(), v.to_string());
+                                meta.extra.insert(k.to_string(), v.to_string());
                             }
                         }
                     }
@@ -162,9 +156,24 @@ pub fn filename_for(kind: NoteKind, created: &DateTime<Local>, title: Option<&st
             let slug = slugify(t);
             format!("{date}-{slug}")
         }
-        (NoteKind::Link, _) => format!("link-{date}-{:02}{:02}{:02}", created.hour(), created.minute(), created.second()),
-        (NoteKind::Session, _) => format!("session-{date}-{:02}{:02}{:02}", created.hour(), created.minute(), created.second()),
-        _ => format!("{date}-{:02}{:02}{:02}", created.hour(), created.minute(), created.second()),
+        (NoteKind::Link, _) => format!(
+            "link-{date}-{:02}{:02}{:02}",
+            created.hour(),
+            created.minute(),
+            created.second()
+        ),
+        (NoteKind::Session, _) => format!(
+            "session-{date}-{:02}{:02}{:02}",
+            created.hour(),
+            created.minute(),
+            created.second()
+        ),
+        _ => format!(
+            "{date}-{:02}{:02}{:02}",
+            created.hour(),
+            created.minute(),
+            created.second()
+        ),
     };
     format!("{base}.md")
 }
@@ -174,10 +183,9 @@ fn slugify(s: &str) -> String {
     for c in s.chars() {
         if c.is_alphanumeric() {
             out.push(c.to_ascii_lowercase());
-        } else if (c == ' ' || c == '-' || c == '_')
-            && !out.ends_with('-') && !out.is_empty() {
-                out.push('-');
-            }
+        } else if (c == ' ' || c == '-' || c == '_') && !out.ends_with('-') && !out.is_empty() {
+            out.push('-');
+        }
     }
     let trimmed = out.trim_matches('-').to_string();
     if trimmed.is_empty() {
@@ -203,11 +211,7 @@ pub fn write_note(note: &Note) -> Result<()> {
     if let Some(parent) = note.path.parent() {
         std::fs::create_dir_all(parent)?;
     }
-    let content = format!(
-        "{}{}\n",
-        render_front_matter(&note.meta),
-        note.body
-    );
+    let content = format!("{}{}\n", render_front_matter(&note.meta), note.body);
     // atomic-ish write
     let tmp = note.path.with_extension("md.tmp");
     std::fs::write(&tmp, &content)?;

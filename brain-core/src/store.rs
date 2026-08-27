@@ -50,21 +50,16 @@ impl Config {
         if let Some(d) = &self.index_dir {
             Ok(d.clone())
         } else {
-            Ok(self
-                .notes_dir()?
-                .join(".brain")
-                .join("index"))
+            Ok(self.notes_dir()?.join(".brain").join("index"))
         }
     }
 
     pub fn editor(&self) -> String {
-        self.editor
-            .clone()
-            .unwrap_or_else(|| {
-                std::env::var("EDITOR")
-                    .or_else(|_| std::env::var("VISUAL"))
-                    .unwrap_or_else(|_| "vi".into())
-            })
+        self.editor.clone().unwrap_or_else(|| {
+            std::env::var("EDITOR")
+                .or_else(|_| std::env::var("VISUAL"))
+                .unwrap_or_else(|_| "vi".into())
+        })
     }
 
     /// Global config file path (~/.config/brain/config.toml).
@@ -175,11 +170,7 @@ impl Store {
             };
             if entry.file_type().map(|t| t.is_file()).unwrap_or(false) {
                 let path = entry.path();
-                if path
-                    .extension()
-                    .map(|e| e == "md")
-                    .unwrap_or(false)
-                {
+                if path.extension().map(|e| e == "md").unwrap_or(false) {
                     files.push(path.to_path_buf());
                 }
             }

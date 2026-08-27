@@ -77,11 +77,12 @@ pub fn build_index(store: &Store) -> Result<Index> {
         let doc_idx = idx.docs.len();
         idx.docs.push(IndexEntry {
             path: path.clone(),
-            title: note
-                .meta
-                .title
-                .clone()
-                .unwrap_or_else(|| path.file_name().unwrap_or_default().to_string_lossy().into_owned()),
+            title: note.meta.title.clone().unwrap_or_else(|| {
+                path.file_name()
+                    .unwrap_or_default()
+                    .to_string_lossy()
+                    .into_owned()
+            }),
             kind: note.meta.kind.as_str().to_string(),
             created: note.meta.created.to_rfc3339(),
             size: note.body.len(),
@@ -257,7 +258,8 @@ pub fn chunk_note(note: &Note) -> Vec<crate::Chunk> {
 
 /// Quick offset-based helper used by retrieval to find a line for a chunk.
 pub fn line_of(substring: &str, text: &str) -> Option<usize> {
-    text.find(substring).map(|pos| 1 + text[..pos].matches('\n').count())
+    text.find(substring)
+        .map(|pos| 1 + text[..pos].matches('\n').count())
 }
 
 pub fn note_kind(path: &Path) -> NoteKind {
@@ -292,10 +294,8 @@ mod tests {
             size: 0,
         });
         idx.text.push("learn rust ownership and borrow".to_string());
-        idx.terms
-            .insert("rust".into(), vec![(0, 2)]);
-        idx.terms
-            .insert("borrow".into(), vec![(0, 1)]);
+        idx.terms.insert("rust".into(), vec![(0, 2)]);
+        idx.terms.insert("borrow".into(), vec![(0, 1)]);
         let hits = search(&idx, "rust borrow").unwrap();
         assert_eq!(hits.len(), 1);
         assert_eq!(hits[0].entry.path, PathBuf::from("/tmp/rust-notes.md"));

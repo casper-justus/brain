@@ -6,7 +6,10 @@ use std::path::PathBuf;
 
 /// `studio` — the interactive TUI for your brain.
 #[derive(Parser)]
-#[command(name = "studio", about = "Interactive TUI browser for your brain notes")]
+#[command(
+    name = "studio",
+    about = "Interactive TUI browser for your brain notes"
+)]
 struct Cli {
     /// Path to a config file.
     #[arg(long)]

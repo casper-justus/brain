@@ -1,10 +1,14 @@
 use std::path::PathBuf;
 
-use clap::{Args, Parser, Subcommand};
 use brain_core::note::NoteKind;
+use clap::{Args, Parser, Subcommand};
 
 #[derive(Parser)]
-#[command(name = "brain", version, about = "Local-first second brain with Nexus-style retrieval")]
+#[command(
+    name = "brain",
+    version,
+    about = "Local-first second brain with Nexus-style retrieval"
+)]
 pub struct Cli {
     #[command(subcommand)]
     pub command: Command,

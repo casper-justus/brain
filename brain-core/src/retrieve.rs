@@ -123,10 +123,7 @@ fn synthesize(query: &str, retrieved: &[Retrieved]) -> String {
             "No notes matched “{query}”. Try broader terms, or capture more to the corpus."
         );
     }
-    let mut cited: Vec<String> = retrieved
-        .iter()
-        .map(|r| r.citation.clone())
-        .collect();
+    let mut cited: Vec<String> = retrieved.iter().map(|r| r.citation.clone()).collect();
     cited.dedup();
     format!(
         "Found {} relevant passage(s) for “{query}”: {}. {}",
@@ -139,8 +136,8 @@ fn synthesize(query: &str, retrieved: &[Retrieved]) -> String {
 #[cfg(test)]
 mod tests {
     use super::*;
-    use std::fs;
     use crate::store::{Config, Store};
+    use std::fs;
 
     #[test]
     fn curate_finds_chunks() {

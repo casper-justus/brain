@@ -3,8 +3,8 @@ use std::time::Duration;
 
 use brain_core::index::{self, IndexEntry};
 use brain_core::note::{self, NoteKind};
-use brain_core::store::Store;
 use brain_core::retrieve;
+use brain_core::store::Store;
 use crossterm::event::{self, Event, KeyCode, KeyEvent};
 use crossterm::terminal::{
     disable_raw_mode, enable_raw_mode, EnterAlternateScreen, LeaveAlternateScreen,
@@ -140,7 +140,8 @@ impl App {
                                         hits.into_iter().map(|h| h.entry).collect();
                                     list.dedup_by(|a, b| a.path == b.path);
                                     self.entries = list;
-                                    self.status = format!("{} result(s) for \"{query}\"", self.entries.len());
+                                    self.status =
+                                        format!("{} result(s) for \"{query}\"", self.entries.len());
                                     if !self.entries.is_empty() {
                                         self.list_state.select(Some(0));
                                         self.load_preview(0);
@@ -216,12 +217,10 @@ impl App {
                         drop_terminal(editor.to_string(), &path)?
                     }
                 }
-                KeyCode::Char('r') => {
-                    match self.refresh() {
-                        Ok(()) => self.status = "re-indexed".into(),
-                        Err(e) => self.status = format!("reindex error: {e}"),
-                    }
-                }
+                KeyCode::Char('r') => match self.refresh() {
+                    Ok(()) => self.status = "re-indexed".into(),
+                    Err(e) => self.status = format!("reindex error: {e}"),
+                },
                 KeyCode::Char('n') => {
                     // new capture: switch to search mode; on Enter writes a capture
                     self.mode = Mode::Capture;
@@ -267,11 +266,7 @@ impl App {
             return;
         }
         let len = self.entries.len() as isize;
-        let cur = self
-            .list_state
-            .selected()
-            .map(|i| i as isize)
-            .unwrap_or(0);
+        let cur = self.list_state.selected().map(|i| i as isize).unwrap_or(0);
         let next = (cur + delta).clamp(0, len - 1) as usize;
         self.list_state.select(Some(next));
         self.load_preview(next);
@@ -362,14 +357,10 @@ impl App {
             .map(|p| p.to_string_lossy().to_string())
             .unwrap_or_else(|| "(no selection)".into());
         let paragraph = Paragraph::new(self.preview.clone())
-            .block(
-                Block::default()
-                    .borders(Borders::ALL)
-                    .title(Span::styled(
-                        format!(" {title} "),
-                        Style::default().fg(Color::White),
-                    )),
-            )
+            .block(Block::default().borders(Borders::ALL).title(Span::styled(
+                format!(" {title} "),
+                Style::default().fg(Color::White),
+            )))
             .wrap(ratatui::widgets::Wrap { trim: false });
         f.render_widget(paragraph, area);
     }
