@@ -1,0 +1,35 @@
+[workspace]
+resolver = "2"
+members = [
+    "brain-core",
+    "brain-cli",
+    "brain-tui",
+]
+
+[workspace.package]
+version = "0.1.0"
+edition = "2021"
+license = "MIT"
+authors = ["casper-justus"]
+rust-version = "1.75"
+
+[workspace.dependencies]
+brain-core = { path = "brain-core" }
+serde = { version = "1", features = ["derive"] }
+serde_json = "1"
+toml = "0.8"
+thiserror = "2"
+anyhow = "1"
+clap = { version = "4", features = ["derive", "env"] }
+dirs = "5"
+regex = "1"
+chrono = { version = "0.4", features = ["serde"] }
+fuzzy-matcher = "0.3"
+ignore = "0.4"
+rayon = "1"
+
+[profile.release]
+lto = true
+strip = true
+codegen-units = 1
+opt-level = "s"

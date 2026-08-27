@@ -1,0 +1,21 @@
+[package]
+name = "brain-tui"
+version.workspace = true
+edition.workspace = true
+description = "TUI interface for the brain second-brain app"
+default-run = "studio"
+
+[[bin]]
+name = "studio"
+path = "src/main.rs"
+
+[dependencies]
+brain-core.workspace = true
+anyhow.workspace = true
+clap.workspace = true
+chrono.workspace = true
+ratatui = "0.29"
+crossterm = { version = "0.28", features = ["event-stream", "serde"] }
+
+[dev-dependencies]
+tempfile = "3"
